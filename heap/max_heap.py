@@ -7,32 +7,36 @@ class Heap:
         self._bubble_up(len(self.storage) - 1)
 
     def delete(self):
-        pass
+        deleted = self.storage[0]
+        self.storage[0], self.storage[-1] = self.storage[-1], self.storage[0]
+        self.storage.pop()
+        self._sift_down(0)
+        return deleted
 
     def get_max(self):
         return self.storage[0]
 
     def get_size(self):
-        pass
-        # return len(self.storage)
+        return len(self.storage)
 
     def _bubble_up(self, index):
         while (index - 1) // 2 >= 0:
-            parent_idx = (index - 1) // 2
-            if self.storage[parent_idx] < self.storage[index]:
-                self.storage[index], self.storage[parent_idx] = self.storage[parent_idx], self.storage[index]
-            index = parent_idx
+            parent_index = (index - 1) // 2
+            if self.storage[parent_index] < self.storage[index]:
+                self.storage[index], self.storage[parent_index] = self.storage[parent_index], self.storage[index]
+            index = parent_index
 
     def _sift_down(self, index):
-        left_child = 2 * index + 1
-        right_child = 2 * index + 2
-        largest = index
-        if len(self.storage) > left_child and self.storage[largest] < self.storage[left_child]:
-            largest = left_child
+        while index * 2 + 1 <= len(self.storage) - 1:
+            left_child_index = index * 2 + 1
+            right_child_index = index * 2 + 2
 
-        if len(self.storage) > right_child and self.storage[largest] < self.storage[right_child]:
-            largest = right_child
+            if right_child_index > len(self.storage) - 1:
+                largest_index = left_child_index
+            else:
+                largest_index = index * 2 + \
+                    1 if self.storage[left_child_index] > self.storage[right_child_index] else right_child_index
 
-        if largest != index:
-            index, largest = largest, index
-            self._sift_down(largest)
+            if self.storage[index] < self.storage[largest_index]:
+                self.storage[index], self.storage[largest_index] = self.storage[largest_index], self.storage[index]
+            index = largest_index
